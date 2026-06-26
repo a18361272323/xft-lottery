@@ -2,6 +2,7 @@
   const APP_KEY = "d468702b-1e7c-465a-8d3b-6ffb3227e2bf";
 
   const MODEL_KEYS = {
+    music: "MOon6DjqeS",
     lottery_config: "MOGa3itmJ3",
     lottery_result: "MOMB2Bl6Y4",
     lottery_prize: "MOCvi7CCkt",
@@ -9,6 +10,9 @@
   };
 
   const METHOD_KEYS = {
+    music: {
+      list: "FU3wW3Zwbz"
+    },
     lottery_config: {
       list: "FUThPwpPcT"
     },
@@ -117,7 +121,7 @@
 
   function toPrize(row) {
     return {
-      type: row.type,
+      type: String(row.type),
       count: row.count,
       title: row.title,
       text: row.text,
@@ -129,10 +133,65 @@
     return results
       .filter(row => row.result_type === "lucky")
       .reduce((acc, row) => {
-        acc[row.type] = acc[row.type] || [];
-        acc[row.type].push(toUserArray(row));
+        const type = String(row.type);
+        acc[type] = acc[type] || [];
+        acc[type].push(toUserArray(row));
         return acc;
       }, {});
+  }
+
+  function pickUrl(value) {
+    if (!value) {
+      return "";
+    }
+    if (typeof value === "string") {
+      const text = value.trim();
+      if (!text) {
+        return "";
+      }
+      if (text.charAt(0) === "{" || text.charAt(0) === "[") {
+        try {
+          return pickUrl(JSON.parse(text));
+        } catch (e) {
+          return text;
+        }
+      }
+      return text;
+    }
+    if (Array.isArray(value)) {
+      for (let i = 0; i < value.length; i++) {
+        const url = pickUrl(value[i]);
+        if (url) {
+          return url;
+        }
+      }
+      return "";
+    }
+    if (typeof value === "object") {
+      return (
+        value.url ||
+        value.fileUrl ||
+        value.file_url ||
+        value.downloadUrl ||
+        value.download_url ||
+        value.path ||
+        ""
+      );
+    }
+    return "";
+  }
+
+  function setMusicSource(musicRows) {
+    const row = (musicRows || []).find(item => item.music);
+    const url = row ? pickUrl(row.music) : "";
+    const music = document.querySelector("#music");
+
+    if (music && url && music.getAttribute("src") !== url) {
+      music.setAttribute("src", url);
+      music.load && music.load();
+    }
+
+    return url;
   }
 
   function buildErrorData(results) {
@@ -157,8 +216,9 @@
       list("lottery_user"),
       list("lottery_prize"),
       list("lottery_result"),
-      list("lottery_config")
-    ]).then(([userRows, prizeRows, resultRows, configRows]) => {
+      list("lottery_config"),
+      list("music")
+    ]).then(([userRows, prizeRows, resultRows, configRows, musicRows]) => {
       const users = userRows.map(toUserArray);
       const orderedPrizes = prizeRows.slice().sort((a, b) => {
         return Number(a.sort_no || 0) - Number(b.sort_no || 0);
@@ -174,6 +234,7 @@
         (companyConfig && companyConfig.key_value) ||
         (fallbackConfig && fallbackConfig.key_value) ||
         "";
+      const musicUrl = setMusicSource(musicRows);
 
       return {
         users,
@@ -181,7 +242,8 @@
         cfgData: {
           prizes: orderedPrizes.map(toPrize),
           EACH_COUNT: orderedPrizes.map(row => row.each_count),
-          COMPANY: companyName
+          COMPANY: companyName,
+          MUSIC: musicUrl
         },
         luckyData,
         errorData,
@@ -220,7 +282,9 @@
             outData.push([prize.text]);
             resultRows
               .filter(
-                row => row.result_type === "lucky" && row.type === prize.type
+                row =>
+                  row.result_type === "lucky" &&
+                  String(row.type) === String(prize.type)
               )
               .forEach(row => {
                 outData.push(toUserArray(row));

@@ -1,6 +1,7 @@
 const APP_KEY = "d468702b-1e7c-465a-8d3b-6ffb3227e2bf";
 
 const MODEL_KEYS = {
+  music: "MOon6DjqeS",
   lottery_config: "MOGa3itmJ3",
   lottery_result: "MOMB2Bl6Y4",
   lottery_prize: "MOCvi7CCkt",
@@ -8,6 +9,16 @@ const MODEL_KEYS = {
 };
 
 const METHOD_KEYS = {
+  music: {
+    list: "FU3wW3Zwbz",
+    add: "FUIs08BWjb",
+    edit: "FUMQgTIJ8W",
+    detail: "FUj9qwnCcQ",
+    delete: "FUDoOP7YkA",
+    batch_delete: "FUXvJpoKbZ",
+    export: "FUKeKtx9Zs",
+    import: "FUEvvpVqoc"
+  },
   lottery_config: {
     list: "FUThPwpPcT",
     add: "FUDo1sxO8u",

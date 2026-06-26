@@ -2,6 +2,24 @@
 
 appKey: `d468702b-1e7c-465a-8d3b-6ffb3227e2bf`
 
+## music
+
+- modelNameEn: `music`
+- modelNameZh: `music`
+- modelKey: `MOon6DjqeS`
+- fields: `music`
+
+| Method | Tag | methodKey |
+| --- | --- | --- |
+| list | BATCH_FIND | `FU3wW3Zwbz` |
+| add | ADD | `FUIs08BWjb` |
+| edit | UPDATE | `FUMQgTIJ8W` |
+| detail | FIND | `FUj9qwnCcQ` |
+| delete | REMOVE | `FUDoOP7YkA` |
+| batch_delete | BATCH_REMOVE | `FUXvJpoKbZ` |
+| export | EXPORT | `FUKeKtx9Zs` |
+| import | IMPORT | `FUEvvpVqoc` |
+
 ## lottery_config
 
 - modelNameEn: `lotteryconfig`
