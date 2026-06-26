@@ -109,7 +109,7 @@ module.exports = {
         // 移除空格
         collapseWhitespace: true
       },
-      hash: true,
+      hash: false,
       inject: true
     }),
     new CopyWebpackPlugin([
