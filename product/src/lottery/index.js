@@ -119,7 +119,7 @@ function initCards() {
     length = member.length;
 
   let isBold = false,
-    showTable = basicData.leftUsers.length === basicData.users.length,
+    showTable = true,
     index = 0,
     totalMember = member.length,
     position = {
@@ -191,11 +191,7 @@ function initCards() {
 
   bindEvent();
 
-  if (showTable) {
-    switchScreen("enter");
-  } else {
-    switchScreen("lottery");
-  }
+  switchScreen("enter");
 }
 
 function setLotteryStatus(status = false) {
