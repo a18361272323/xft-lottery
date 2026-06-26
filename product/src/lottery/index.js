@@ -191,7 +191,7 @@ function initCards() {
 
   bindEvent();
 
-  switchScreen("enter");
+  showWelcomeScreen();
 }
 
 function setLotteryStatus(status = false) {
@@ -223,8 +223,7 @@ function bindEvent() {
     switch (target) {
       // 显示数字墙
       case "welcome":
-        switchScreen("enter");
-        rotate = false;
+        showWelcomeScreen();
         break;
       // 进入抽奖
       case "enter":
@@ -254,7 +253,7 @@ function bindEvent() {
 
         resetPrize(currentPrizeIndex);
         reset();
-        switchScreen("enter");
+        showWelcomeScreen();
         break;
       // 抽奖
       case "lottery":
@@ -382,6 +381,12 @@ function switchScreen(type) {
       transform(targets.sphere, 2000);
       break;
   }
+}
+
+function showWelcomeScreen() {
+  rotate = false;
+  addHighlight();
+  switchScreen("enter");
 }
 
 /**
@@ -541,9 +546,9 @@ function render() {
 function getWinnerLayout(count) {
   const columns = count > 5 ? Math.ceil(count / 2) : count;
   const rows = count > 5 ? 2 : 1;
-  const gapX = 180 * Resolution;
-  const gapY = 220 * Resolution;
-  const z = 1800 * Resolution;
+  const gapX = 170 * Resolution;
+  const gapY = 210 * Resolution;
+  const z = 900 * Resolution;
   const startX = -((columns - 1) * gapX) / 2;
   const startY = ((rows - 1) * gapY) / 2 + 120 * Resolution;
 

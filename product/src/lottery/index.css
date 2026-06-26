@@ -137,8 +137,7 @@ button:active {
 .prize.element {
   transition: background-color 1.5s ease-in 0.3s;
   background-color: rgba(253, 105, 0, 0.85) !important;
-  box-shadow: 0 0 22px rgba(253, 105, 0, 0.95);
-  transform: scale(1.16);
+  box-shadow: 0 0 18px rgba(253, 105, 0, 0.95);
 }
 
 .prize .company,
