@@ -184,6 +184,10 @@ function initCards() {
   //
 
   controls = new THREE.TrackballControls(camera, renderer.domElement);
+  controls.enabled = false;
+  controls.noRotate = true;
+  controls.noZoom = true;
+  controls.noPan = true;
   controls.rotateSpeed = 0.5;
   controls.minDistance = 500;
   controls.maxDistance = 6000;
