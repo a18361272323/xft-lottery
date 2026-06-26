@@ -167,8 +167,13 @@
       const errorData = buildErrorData(resultRows);
       const companyConfig = configRows.find(row => {
         const key = String(row.key_name || "").toLowerCase();
-        return key === "company";
+        return key === "company" || key === "company_name" || key === "companyname";
       });
+      const fallbackConfig = configRows.find(row => row.key_value);
+      const companyName =
+        (companyConfig && companyConfig.key_value) ||
+        (fallbackConfig && fallbackConfig.key_value) ||
+        "";
 
       return {
         users,
@@ -176,7 +181,7 @@
         cfgData: {
           prizes: orderedPrizes.map(toPrize),
           EACH_COUNT: orderedPrizes.map(row => row.each_count),
-          COMPANY: companyConfig ? companyConfig.key_value : "MoShang"
+          COMPANY: companyName
         },
         luckyData,
         errorData,
