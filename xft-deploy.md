@@ -41,6 +41,9 @@ container.style.padding = "0px 0px";
 var iframe = document.createElement("iframe");
 iframe.setAttribute("id", "lottery-frame");
 iframe.frameBorder = "0";
+iframe.setAttribute("allow", "fullscreen");
+iframe.setAttribute("allowfullscreen", "true");
+iframe.setAttribute("webkitallowfullscreen", "true");
 iframe.setAttribute(
   "style",
   "width: 100%; height: 100%; position: relative;"

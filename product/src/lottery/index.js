@@ -208,6 +208,10 @@ function setLotteryStatus(status = false) {
 function bindEvent() {
   document.querySelector("#menu").addEventListener("click", function (e) {
     e.stopPropagation();
+    if (e.target.id === "fullscreen") {
+      toggleFullscreen();
+      return;
+    }
     // 如果正在抽奖，则禁止一切操作
     if (isLotting) {
       if (e.target.id === "lottery") {
@@ -300,6 +304,73 @@ function bindEvent() {
   });
 
   window.addEventListener("resize", onWindowResize, false);
+  document.addEventListener("fullscreenchange", updateFullscreenButton, false);
+  document.addEventListener("webkitfullscreenchange", updateFullscreenButton, false);
+}
+
+function getFullscreenElement() {
+  return (
+    document.fullscreenElement ||
+    document.webkitFullscreenElement ||
+    document.msFullscreenElement
+  );
+}
+
+function updateFullscreenButton() {
+  let btn = document.querySelector("#fullscreen");
+  if (btn) {
+    btn.innerHTML = getFullscreenElement() ? "退出全屏" : "全屏";
+  }
+}
+
+function requestFullscreen(target) {
+  if (target.requestFullscreen) {
+    return target.requestFullscreen();
+  }
+  if (target.webkitRequestFullscreen) {
+    return target.webkitRequestFullscreen();
+  }
+  if (target.msRequestFullscreen) {
+    return target.msRequestFullscreen();
+  }
+  return Promise.reject(new Error("当前浏览器不支持全屏"));
+}
+
+function exitFullscreen() {
+  if (document.exitFullscreen) {
+    return document.exitFullscreen();
+  }
+  if (document.webkitExitFullscreen) {
+    return document.webkitExitFullscreen();
+  }
+  if (document.msExitFullscreen) {
+    return document.msExitFullscreen();
+  }
+  return Promise.reject(new Error("当前浏览器不支持退出全屏"));
+}
+
+function toggleFullscreen() {
+  let fullscreenTarget = document.documentElement;
+
+  try {
+    if (window.frameElement) {
+      fullscreenTarget = window.frameElement;
+    }
+  } catch (e) {}
+
+  if (getFullscreenElement()) {
+    exitFullscreen()
+      .then(updateFullscreenButton)
+      .catch(() => {
+        addQipao("退出全屏失败，请按 ESC 退出。");
+      });
+  } else {
+    requestFullscreen(fullscreenTarget)
+      .then(updateFullscreenButton)
+      .catch(() => {
+        addQipao("当前页面不允许全屏，请检查 iframe 全屏权限。");
+      });
+  }
 }
 
 function switchScreen(type) {
