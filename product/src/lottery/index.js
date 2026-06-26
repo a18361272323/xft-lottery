@@ -538,42 +538,36 @@ function render() {
   renderer.render(scene, camera);
 }
 
+function getWinnerLayout(count) {
+  const columns = count > 5 ? Math.ceil(count / 2) : count;
+  const rows = count > 5 ? 2 : 1;
+  const gapX = 180 * Resolution;
+  const gapY = 220 * Resolution;
+  const z = 1800 * Resolution;
+  const startX = -((columns - 1) * gapX) / 2;
+  const startY = ((rows - 1) * gapY) / 2 + 120 * Resolution;
+
+  return {
+    columns,
+    gapX,
+    gapY,
+    startX,
+    startY,
+    z
+  };
+}
+
 function selectCard(duration = 600) {
   rotate = false;
-  let width = 140,
-    tag = -(currentLuckys.length - 1) / 2,
-    locates = [];
+  let locates = [],
+    layout = getWinnerLayout(currentLuckys.length);
 
-  // 计算位置信息, 大于5个分两排显示
-  if (currentLuckys.length > 5) {
-    let yPosition = [-87, 87],
-      l = selectedCardIndex.length,
-      mid = Math.ceil(l / 2);
-    tag = -(mid - 1) / 2;
-    for (let i = 0; i < mid; i++) {
-      locates.push({
-        x: tag * width * Resolution,
-        y: yPosition[0] * Resolution
-      });
-      tag++;
-    }
-
-    tag = -(l - mid - 1) / 2;
-    for (let i = mid; i < l; i++) {
-      locates.push({
-        x: tag * width * Resolution,
-        y: yPosition[1] * Resolution
-      });
-      tag++;
-    }
-  } else {
-    for (let i = selectedCardIndex.length; i > 0; i--) {
-      locates.push({
-        x: tag * width * Resolution,
-        y: 0 * Resolution
-      });
-      tag++;
-    }
+  for (let i = 0; i < currentLuckys.length; i++) {
+    locates.push({
+      x: layout.startX + (i % layout.columns) * layout.gapX,
+      y: layout.startY - Math.floor(i / layout.columns) * layout.gapY,
+      z: layout.z
+    });
   }
 
   let text = currentLuckys.map(item => item[1]);
@@ -588,8 +582,8 @@ function selectCard(duration = 600) {
       .to(
         {
           x: locates[index].x,
-          y: locates[index].y * Resolution,
-          z: 2200
+          y: locates[index].y,
+          z: locates[index].z
         },
         Math.random() * duration + duration
       )
@@ -609,7 +603,6 @@ function selectCard(duration = 600) {
       .start();
 
     object.element.classList.add("prize");
-    tag++;
   });
 
   new TWEEN.Tween(this)
@@ -826,8 +819,10 @@ function setData(type, data) {
       success() {
         resolve();
       },
-      error() {
-        reject();
+      error(error) {
+        console.error(error);
+        addQipao("中奖结果保存失败，请稍后在结果表核对。");
+        resolve();
       }
     });
   });
@@ -843,8 +838,10 @@ function setErrorData(data) {
       success() {
         resolve();
       },
-      error() {
-        reject();
+      error(error) {
+        console.error(error);
+        addQipao("重抽排除记录保存失败，请稍后在结果表核对。");
+        resolve();
       }
     });
   });
