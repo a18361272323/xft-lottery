@@ -45,6 +45,9 @@ let currentScreen = "enter";
 
 let selectedCardIndex = [],
   rotate = false,
+  isTempDataReady = false,
+  isUserDataReady = false,
+  isCardsReady = false,
   basicData = {
     prizes: [], //奖品信息
     users: [], //所有人员
@@ -99,6 +102,8 @@ function initAll() {
       showPrizeList(currentPrizeIndex);
       let curLucks = basicData.luckyUsers[currentPrize.type];
       setPrizeData(currentPrizeIndex, curLucks ? curLucks.length : 0, true);
+      isTempDataReady = true;
+      initCardsWhenReady();
     }
   });
 
@@ -106,13 +111,22 @@ function initAll() {
     url: "/getUsers",
     success(data) {
       basicData.users = data;
-
-      initCards();
-      // startMaoPao();
-      animate();
-      shineCard();
+      isUserDataReady = true;
+      initCardsWhenReady();
     }
   });
+}
+
+function initCardsWhenReady() {
+  if (isCardsReady || !isTempDataReady || !isUserDataReady) {
+    return;
+  }
+
+  isCardsReady = true;
+  initCards();
+  // startMaoPao();
+  animate();
+  shineCard();
 }
 
 function initCards() {
