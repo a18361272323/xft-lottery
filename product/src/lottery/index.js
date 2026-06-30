@@ -833,8 +833,8 @@ function shineCard() {
   let shineCard = 10 + random(maxCard);
 
   setInterval(() => {
-    // 正在抽奖停止闪烁
-    if (isLotting) {
+    // 首页数字墙和正在抽奖时停止闪烁，避免覆盖 2026 高亮。
+    if (currentScreen === "enter" || isLotting) {
       return;
     }
     maxUser = basicData.leftUsers.length;
@@ -842,7 +842,10 @@ function shineCard() {
       let index = random(maxUser),
         cardIndex = random(TOTAL_CARDS);
       // 当前显示的已抽中名单不进行随机切换
-      if (selectedCardIndex.includes(cardIndex)) {
+      if (
+        selectedCardIndex.includes(cardIndex) ||
+        threeDCards[cardIndex].element.classList.contains("lightitem")
+      ) {
         continue;
       }
       shine(cardIndex);
