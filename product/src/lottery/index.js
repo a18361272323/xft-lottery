@@ -567,15 +567,16 @@ function render() {
 }
 
 function getWinnerLayout(count) {
-  const columns = count > 5 ? Math.ceil(count / 2) : count;
-  const rows = count > 5 ? 2 : 1;
+  const rowCounts =
+    count > 5 ? [Math.ceil(count / 2), Math.floor(count / 2)] : [count];
+  const rows = rowCounts.length;
   const gapX = 170 * Resolution;
   const gapY = 210 * Resolution;
   const z = 900 * Resolution;
   const startY = ((rows - 1) * gapY) / 2 + 120 * Resolution;
 
   return {
-    columns,
+    rowCounts,
     gapX,
     gapY,
     startY,
@@ -583,26 +584,33 @@ function getWinnerLayout(count) {
   };
 }
 
-function selectCard(duration = 600) {
-  rotate = false;
-  let locates = [],
-    layout = getWinnerLayout(currentLuckys.length);
+function getWinnerPositions(count) {
+  const layout = getWinnerLayout(count);
+  const locates = [];
 
-  for (let i = 0; i < currentLuckys.length; i++) {
-    const row = Math.floor(i / layout.columns);
-    const col = i % layout.columns;
-    const rowStartIndex = row * layout.columns;
-    const rowCount = Math.min(
-      layout.columns,
-      currentLuckys.length - rowStartIndex
-    );
+  layout.rowCounts.forEach((rowCount, row) => {
     const rowStartX = -((rowCount - 1) * layout.gapX) / 2;
 
-    locates.push({
-      x: rowStartX + col * layout.gapX,
-      y: layout.startY - row * layout.gapY,
-      z: layout.z
-    });
+    for (let col = 0; col < rowCount; col++) {
+      locates.push({
+        x: rowStartX + col * layout.gapX,
+        y: layout.startY - row * layout.gapY,
+        z: layout.z
+      });
+    }
+  });
+
+  return locates;
+}
+
+function selectCard(duration = 600) {
+  rotate = false;
+  scene.rotation.set(0, 0, 0);
+
+  let locates = getWinnerPositions(currentLuckys.length);
+
+  if (locates.length > currentLuckys.length) {
+    locates = locates.slice(0, currentLuckys.length);
   }
 
   let text = currentLuckys.map(item => item[1]);
