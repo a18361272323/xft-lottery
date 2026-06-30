@@ -126,6 +126,12 @@ button:active {
   border: 1px solid rgba(253, 105, 0, 0.25);
 }
 
+.welcome-highlight {
+  background-color: rgba(253, 105, 0, 0.95) !important;
+  box-shadow: 0 0 14px rgba(253, 105, 0, 0.95);
+  border-color: rgba(253, 105, 0, 0.4);
+}
+
 .highlight.element .name {
   text-shadow: 0 0 16px rgba(255, 255, 255, 0.95);
 }

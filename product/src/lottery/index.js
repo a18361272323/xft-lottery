@@ -13,6 +13,7 @@ import { NUMBER_MATRIX } from "./config.js";
 const ROTATE_TIME = 3000;
 const ROTATE_LOOP = 1000;
 const BASE_HEIGHT = 1080;
+const WELCOME_YEAR = "2026";
 
 let TOTAL_CARDS,
   btns = {
@@ -40,6 +41,7 @@ let camera,
   };
 
 let rotateObj;
+let currentScreen = "enter";
 
 let selectedCardIndex = [],
   rotate = false,
@@ -368,6 +370,7 @@ function toggleFullscreen() {
 }
 
 function switchScreen(type) {
+  currentScreen = type;
   switch (type) {
     case "enter":
       btns.enter.classList.remove("none");
@@ -384,8 +387,13 @@ function switchScreen(type) {
 
 function showWelcomeScreen() {
   rotate = false;
-  addHighlight();
   switchScreen("enter");
+  addHighlight();
+  setTimeout(() => {
+    if (currentScreen === "enter") {
+      addHighlight();
+    }
+  }, 2100);
 }
 
 /**
@@ -408,7 +416,7 @@ function createCard(user, isBold, id, showTable) {
   if (isBold) {
     element.className = "element lightitem";
     if (showTable) {
-      element.classList.add("highlight");
+      element.classList.add("highlight", "welcome-highlight");
     }
   } else {
     element.className = "element";
@@ -425,14 +433,16 @@ function createCard(user, isBold, id, showTable) {
 }
 
 function removeHighlight() {
-  document.querySelectorAll(".highlight").forEach(node => {
+  document.querySelectorAll(".highlight, .welcome-highlight").forEach(node => {
     node.classList.remove("highlight");
+    node.classList.remove("welcome-highlight");
   });
 }
 
 function addHighlight() {
   document.querySelectorAll(".lightitem").forEach(node => {
     node.classList.add("highlight");
+    node.classList.add("welcome-highlight");
   });
 }
 
@@ -872,7 +882,7 @@ function reset() {
 }
 
 function createHighlight() {
-  let year = new Date().getFullYear() + "";
+  let year = WELCOME_YEAR;
   let step = 4,
     xoffset = 1,
     yoffset = 1,
