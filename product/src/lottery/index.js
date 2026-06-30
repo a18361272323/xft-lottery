@@ -558,14 +558,12 @@ function getWinnerLayout(count) {
   const gapX = 170 * Resolution;
   const gapY = 210 * Resolution;
   const z = 900 * Resolution;
-  const startX = -((columns - 1) * gapX) / 2;
   const startY = ((rows - 1) * gapY) / 2 + 120 * Resolution;
 
   return {
     columns,
     gapX,
     gapY,
-    startX,
     startY,
     z
   };
@@ -577,9 +575,18 @@ function selectCard(duration = 600) {
     layout = getWinnerLayout(currentLuckys.length);
 
   for (let i = 0; i < currentLuckys.length; i++) {
+    const row = Math.floor(i / layout.columns);
+    const col = i % layout.columns;
+    const rowStartIndex = row * layout.columns;
+    const rowCount = Math.min(
+      layout.columns,
+      currentLuckys.length - rowStartIndex
+    );
+    const rowStartX = -((rowCount - 1) * layout.gapX) / 2;
+
     locates.push({
-      x: layout.startX + (i % layout.columns) * layout.gapX,
-      y: layout.startY - Math.floor(i / layout.columns) * layout.gapY,
+      x: rowStartX + col * layout.gapX,
+      y: layout.startY - row * layout.gapY,
       z: layout.z
     });
   }
